@@ -3,230 +3,50 @@ services:
   postgres:
     container_name: postgres
     image: postgres:${POSTGRES_VERSION}
-    environment:
-      - POSTGRES_USER=${POSTGRES_USERNAME}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DATABASE}
+    env_file:
+    - docker.env
     ports:
       - ${POSTGRES_PORT}:5432
     volumes:
-      - /data/postgres/
+      - /data/postgres:/data/postgres
     networks:
       - nestjs-network
-
-  # pgadmin:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  #   links:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  #     - postgres:postgres
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  #   container_name: pgadmin
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  #   image: dpage/pgadmin4
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  #   ports:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  #     - "8080:80"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  #   volumes:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  #     - /data/pgadmin:/root/.pgadmin
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  #   env_file:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  #     - docker.env
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  #   networks:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  #     - postgres
+    
+  pgadmin:
+    links:
+    - postgres:postgres
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    ports:
+    - "8080:80"
+    volumes:
+    - /data/pgadmin:/root/.pgadmin
+    env_file:
+    - docker.env
+    networks:
+    - nestjs-network
   dev:
-    depends_on:
-      - postgres
     container_name: nestjs_api_dev
     image: nestjs-api-dev:1.0.0
     build:
       context: .
       target: development
       dockerfile: ./Dockerfile
-    command: npm run start:debug
     ports:
       - 3000:3000
-      - 9229:9229
-    networks:
-      - nestjs-network
+      - 3001:9229
+    command: npm run start:dev
     env_file:
       - docker.env
+    networks:
+      - nestjs-network
+    depends_on:
+      - postgres
     volumes:
-      - /data/src/
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
     restart: unless-stopped
+  
 networks:
   nestjs-network:
     driver: bridge
