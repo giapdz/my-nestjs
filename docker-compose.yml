@@ -37,14 +37,14 @@ services:
       - 3001:9229
     command: npm run start:dev
     env_file:
-      - docker.env
+      - .env
     networks:
       - nestjs-network
     depends_on:
       - postgres
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+    # volumes:
+    #   - .:/usr/src/app
+    #   - /usr/src/app/node_modules
     restart: unless-stopped
   
 networks:

@@ -7,6 +7,7 @@ import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { TokenPayload } from './interface/tokenPayload.interface';
 
+@Injectable()
 export class AuthenticationService {
   constructor(
     private readonly usersService: UsersService,
@@ -22,6 +23,7 @@ export class AuthenticationService {
         password: hashedPassword,
       });
       createdUser.password = undefined;
+      console.log(createdUser, 'user');
       return createdUser;
     } catch (error) {
       if (error?.code === PostgresErrorCode.UniqueViolation) {
@@ -43,20 +45,14 @@ export class AuthenticationService {
       'JWT_EXPIRATION_TIME',
     )}`;
   }
-  public async getAuthenticatedUser(email: string, hashedPassword: string) {
+  public getCookieForLogOut() {
+    return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
+  }
+
+  public async getAuthenticatedUser(email: string, plainTextPassword: string) {
     try {
       const user = await this.usersService.getByEmail(email);
-      const isPasswordMatching = await bcrypt.compare(
-        hashedPassword,
-        user.password,
-      );
-      if (!isPasswordMatching) {
-        throw new HttpException(
-          'Wrong credentials provided',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      user.password = undefined;
+      await this.verifyPassword(plainTextPassword, user.password);
       return user;
     } catch (error) {
       throw new HttpException(
@@ -66,7 +62,19 @@ export class AuthenticationService {
     }
   }
 
-  public getCookieForLogOut() {
-    return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
+  private async verifyPassword(
+    plainTextPassword: string,
+    hashedPassword: string,
+  ) {
+    const isPasswordMatching = await bcrypt.compare(
+      plainTextPassword,
+      hashedPassword,
+    );
+    if (!isPasswordMatching) {
+      throw new HttpException(
+        'Wrong credentials provided',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

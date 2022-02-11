@@ -1,14 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/createUser.dto';
 import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/createUser.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
+    private usersRepository: Repository<User>,
   ) {}
 
   async getByEmail(email: string) {
@@ -17,7 +17,7 @@ export class UsersService {
       return user;
     }
     throw new HttpException(
-      'User with this email not exist',
+      'User with this email does not exist',
       HttpStatus.NOT_FOUND,
     );
   }

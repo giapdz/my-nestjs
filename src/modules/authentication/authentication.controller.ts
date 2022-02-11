@@ -16,7 +16,7 @@ import { JwtAuthenticationGuard } from './jwt-authentication.guard';
 import { LocalStrategy } from './local.strategy';
 import { LocalAuthenticationGuard } from './localAuthentication.guard';
 
-@Controller('authentication')
+@Controller('auth')
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
   @Post('register')
@@ -26,7 +26,7 @@ export class AuthenticationController {
 
   @HttpCode(200)
   @UseGuards(LocalAuthenticationGuard)
-  @Post('Log-in')
+  @Post('log-in')
   async logIn(@Req() request: RequestWithUser, @Res() response: Response) {
     const { user } = request;
     const cookie = this.authenticationService.getCookieWithJwtToken(user.id);
