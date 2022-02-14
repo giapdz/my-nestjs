@@ -1,4 +1,12 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Transform } from 'class-transformer';
+import { User } from 'src/modules/users/entities/user.entity';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Post extends BaseEntity {
@@ -10,4 +18,10 @@ export class Post extends BaseEntity {
 
   @Column()
   public content: string;
+
+  @Column({ nullable: true })
+  public category?: string;
+
+  @ManyToOne(() => User, (author: User) => author.posts)
+  public author: User;
 }
