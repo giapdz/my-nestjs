@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { Post } from 'src/modules/posts/entities/post.entity';
+import { Post } from '../../posts/entities/post.entity';
 import {
   Column,
   Entity,

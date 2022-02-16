@@ -1,6 +1,6 @@
 import { Category } from './../../categories/entities/categoty.entity';
 
-import { User } from 'src/modules/users/entities/user.entity';
+import { User } from '../../users/entities/user.entity';
 import {
   BaseEntity,
   Column,
