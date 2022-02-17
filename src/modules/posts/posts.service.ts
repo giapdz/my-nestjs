@@ -53,6 +53,6 @@ export class PostsService {
     const deleteResponse = await this.postsRepository.delete(id);
     if (!deleteResponse.affected) {
       throw new PostNotFoundException(id);
-    }
+    } else return true;
   }
 }
