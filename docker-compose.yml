@@ -30,7 +30,7 @@ services:
     image: nestjs-api-dev:1.0.0
     build:
       context: .
-      target: development
+      target: dev
       dockerfile: ./Dockerfile
     ports:
       - 3000:3000
@@ -42,9 +42,9 @@ services:
       - nestjs-network
     depends_on:
       - postgres
-    # volumes:
-    #   - .:/usr/src/app
-    #   - /usr/src/app/node_modules
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
     restart: unless-stopped
   
 networks:

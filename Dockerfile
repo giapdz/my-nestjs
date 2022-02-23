@@ -1,30 +1,15 @@
-FROM node:12.19.0-alpine3.9 AS development
-
+FROM node:12.19.0-alpine3.9 AS dev
 WORKDIR /usr/src/app
-
 COPY package*.json ./
-
-RUN npm install glob rimraf
-
-RUN npm install --only=development
-
+RUN npm install 
 COPY . .
+CMD ["npm", "run", "start:dev"]
 
-RUN npm run build
+FROM dev as testing
+COPY tests ./
+ENV CI=true
+CMD ["npm", "run", "test"]
 
-FROM node:12.19.0-alpine3.9 as production
-
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
-
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-RUN npm install --only=production
-
-COPY . .
-
-COPY --from=development /usr/src/app/dist ./dist
-
-CMD ["node", "dist/main"]
+FROM dev as prod
+LABEL version="1.0" "com.example.image"="My Image"
+CMD ["npm", "run", "start"]
