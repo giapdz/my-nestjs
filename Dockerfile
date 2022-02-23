@@ -8,7 +8,7 @@ RUN npm install --only=development
 
 COPY . .
 
-RUN npm run start:dev
+CMD ["npm", "run", "start:dev"]
 
 
 FROM node:12.19.0-alpine3.9 as production
