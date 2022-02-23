@@ -1,15 +1,24 @@
-FROM node:12.19.0-alpine3.9 AS dev
+FROM node:12.19.0-alpine3.9 AS development
+
 WORKDIR /usr/src/app
+
 COPY package*.json ./
-RUN npm install 
+
+RUN npm install --only=development
+
 COPY . .
-CMD ["npm", "run", "start:dev"]
 
-FROM dev as testing
-COPY tests ./
-ENV CI=true
-CMD ["npm", "run", "test"]
+RUN npm run start:dev
 
-FROM dev as prod
-LABEL version="1.0" "com.example.image"="My Image"
-CMD ["npm", "run", "start"]
+
+FROM node:12.19.0-alpine3.9 as production
+
+ARG NODE_ENV=production
+
+ENV NODE_ENV=${NODE_ENV}
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm install --only=production
