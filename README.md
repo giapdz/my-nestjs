@@ -18,3 +18,12 @@ $ docker-compose up -d
 
 ```
 
+## Test
+
+```bash
+# unit tests
+$ docker-compose exec -T app npm run test
+
+```
+
+
