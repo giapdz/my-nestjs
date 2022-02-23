@@ -14,15 +14,14 @@ services:
 
   app:
     container_name: nestjs_api_dev
-    image: nestjs-api-dev:1.0.0
-    build:
-      context: .
-      target: development
-      dockerfile: ./Dockerfile
+    image: registry.gitlab.com/giapdz104/my-nestjs:lastest
+    # build:
+    #   context: .
+    #   target: development
+    #   dockerfile: ./Dockerfile
     ports:
       - 3000:3000
-      - 3001:9229
-    command: npm run start:dev
+    # command: npm run start:dev
     env_file:
       - .env
     networks:
