@@ -20,8 +20,6 @@ lint:
   script:
     - npm ci
     - npm run lint
-  only:
-    - merge_requests
 
 before_script:
   - docker version
