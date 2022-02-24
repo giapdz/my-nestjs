@@ -44,7 +44,7 @@ jest:
   script:
     - docker-compose up -d
     - sleep 15
-    - docker-compose exec -T app npm run test
+    - docker-compose exec -T app npm run test:cov
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   artifacts:
     paths:
