@@ -1,13 +1,37 @@
 # do not use "latest" here, if you want this to work in the future
-image: docker:20
+image: docker/compose:alpine-1.29.2
 
 services:
   - docker:dind
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
 
 stages:
   - build
   - test
   - release
+  - linting
+
+.linting:
+  stage: linting
+  image: node:12.19.0-alpine3.9
+
+# this job make sure commit message is conventional
+lint-commit-msg:
+  extends:
+    - .linting
+  script:
+    - echo "$CI_COMMIT_MESSAGE" | npx commitlint
+
+# this job make sure code is linted
+lint-code:
+  extends:
+    - .linting
+  script:
+    - npm run lint
 
 before_script:
   - docker version
@@ -23,8 +47,6 @@ build:
 test:
   stage: test
   before_script:
-    - apk add --no-cache py3-pip py3-setuptools python3 python3-dev libffi-dev openssl-dev gcc libc-dev make
-    - pip install docker-compose
     - docker-compose version
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
@@ -33,6 +55,10 @@ test:
     - docker-compose up -d
     - sleep 15
     - docker-compose exec -T app npm run test
+  coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+  artifacts:
+    paths:
+      - coverage/
 
 release-tag:
   variables:

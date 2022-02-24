@@ -29,7 +29,7 @@ services:
     depends_on:
       - postgres
     volumes:
-      - .:/usr/src/app
+      - ./coverage:/usr/src/app/coverage
       - /usr/src/app/node_modules
     restart: unless-stopped
 
