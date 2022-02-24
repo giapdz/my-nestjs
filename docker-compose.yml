@@ -14,7 +14,7 @@ services:
 
   app:
     container_name: nestjs_api_dev
-    image: registry.gitlab.com/giapdz104/my-nestjs:lastest
+    image: registry.gitlab.com/giapdz104/my-nestjs
     # build:
     #   context: .
     #   target: development

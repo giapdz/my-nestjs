@@ -32,12 +32,25 @@ test:
   script:
     - docker-compose up -d
     - sleep 15
-    - docker-compose exec -T dev npm run test
+    - docker-compose exec -T app npm run test
 
-release:
+release-tag:
   variables:
     GIT_STRATEGY: none
   stage: release
+  except:
+    - master
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+
+release-latest:
+  variables:
+    GIT_STRATEGY: none
+  stage: release
+  only:
+    - master
   script:
     - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:latest
