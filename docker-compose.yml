@@ -21,7 +21,6 @@ services:
     #   dockerfile: ./Dockerfile
     ports:
       - 3000:3000
-    # command: npm run start:dev
     env_file:
       - .env
     networks:
