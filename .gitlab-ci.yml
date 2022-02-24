@@ -17,6 +17,7 @@ stages:
 
 lint:
   stage: lint
+  image: node:12.19.0-alpine3.9
   script:
     - npm ci
     - npm run lint
