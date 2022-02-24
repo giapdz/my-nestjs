@@ -12,27 +12,16 @@ stages:
 before_script:
   - docker version
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - docker pull $CI_REGISTRY_IMAGE:latest || true
 
 build:
   stage: build
-  cache:
-    key: '$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG'
-    paths:
-      - vendor/
-      - node_modules/
   script:
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
     - DOCKER_BUILDKIT=1 docker build
       --build-arg BUILDKIT_INLINE_CACHE=1
       --cache-from $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
       --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-  after_script:
-    - docker create --name app "$CI_REGISTRY_IMAGE:new-tag"
-    - rm -rf ./vendor
-    - docker cp app:/var/www/html/vendor/ ./vendor
-    - rm -rf ./node_modules
-    - docker cp app:/var/www/html/node_modules/ ./node_modules
 
 .tests:
   stage: test
