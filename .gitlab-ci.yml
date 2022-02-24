@@ -7,7 +7,8 @@ services:
 cache:
   key: '$CI_COMMIT_REF_SLUG'
   paths:
-    - node_modules
+    - vendor/
+    - node_modules/
 
 stages:
   - build
@@ -22,7 +23,10 @@ build:
   stage: build
   script:
     - docker pull $CI_REGISTRY_IMAGE:latest || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+    - DOCKER_BUILDKIT=1 docker build
+      --build-arg BUILDKIT_INLINE_CACHE=1
+      --cache-from $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+      --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
 
 .tests:

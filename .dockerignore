@@ -5,7 +5,7 @@
 
 # Build dependencies
 dist
-/node_modules
+# /node_modules
 /coverage
 
 # Environment (contains sensitive data)
