@@ -1,11 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '../users/entities/user.entity';
-import { Post } from './entities/post.entity';
 import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
 import RequestWithUser from '../authentication/interface/requestWithUser.interface';
-import httpMocks from 'node-mocks-http';
-import { Request } from 'express';
 
 describe('PostsController', () => {
   let controller: PostsController;

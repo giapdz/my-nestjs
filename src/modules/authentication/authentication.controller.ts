@@ -6,18 +6,13 @@ import {
   HttpCode,
   Post,
   Req,
-  Res,
-  SerializeOptions,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
-import { request } from 'http';
 import { AuthenticationService } from './authentication.service';
 import { RegisterDto } from './dto/register.dto';
 import RequestWithUser from './interface/requestWithUser.interface';
 import { JwtAuthenticationGuard } from './jwt-authentication.guard';
-import { LocalStrategy } from './local.strategy';
 import { LocalAuthenticationGuard } from './localAuthentication.guard';
 
 @Controller('auth')
