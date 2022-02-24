@@ -17,10 +17,7 @@ build:
   stage: build
   script:
     - docker pull $CI_REGISTRY_IMAGE:latest || true
-    - DOCKER_BUILDKIT=1 docker build
-      --build-arg BUILDKIT_INLINE_CACHE=1
-      --cache-from $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
-      --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
 
 .tests:
@@ -34,14 +31,14 @@ linting:
   extends: .tests
   script:
     - docker-compose up -d
-    - sleep 25
+    - sleep 15
     - docker-compose exec -T app npm run lint
 
 jest:
   extends: .tests
   script:
     - docker-compose up -d
-    - sleep 25
+    - sleep 15
     - docker-compose exec -T app npm run test:cov
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   artifacts:
