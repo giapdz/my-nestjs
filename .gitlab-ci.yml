@@ -34,14 +34,14 @@ linting:
   extends: .tests
   script:
     - docker-compose up -d
-    - sleep 15
+    - sleep 25
     - docker-compose exec -T app npm run lint
 
 jest:
   extends: .tests
   script:
     - docker-compose up -d
-    - sleep 15
+    - sleep 25
     - docker-compose exec -T app npm run test:cov
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   artifacts:
