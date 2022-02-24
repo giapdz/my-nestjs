@@ -5,33 +5,23 @@ services:
   - docker:dind
 
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
+  key: '$CI_COMMIT_REF_SLUG'
   paths:
-    - node_modules/
+    - node_modules
 
 stages:
+  - lint
   - build
   - test
   - release
-  - linting
 
-.linting:
-  stage: linting
-  image: node:12.19.0-alpine3.9
-
-# this job make sure commit message is conventional
-lint-commit-msg:
-  extends:
-    - .linting
+lint:
+  stage: lint
   script:
-    - echo "$CI_COMMIT_MESSAGE" | npx commitlint
-
-# this job make sure code is linted
-lint-code:
-  extends:
-    - .linting
-  script:
+    - npm ci
     - npm run lint
+  only:
+    - merge_requests
 
 before_script:
   - docker version
@@ -54,7 +44,7 @@ test:
   script:
     - docker-compose up -d
     - sleep 15
-    - docker-compose exec -T app npm run test
+    - docker-compose exec -T app npm run test:cov
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   artifacts:
     paths:
